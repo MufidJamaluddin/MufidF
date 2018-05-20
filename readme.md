@@ -1,15 +1,16 @@
-# HMVC Structure :
+# MufidF HMVC PHP Framework
+## HMVC Structure :
 - Url structure		: http://[server]/[module]/[class_contoller]/[uri_method]
 - Path controller 	: app/route/[module]/[contoller]/[uri_method]
 - Path view			: app/view/[view_path].php
 
-# Controller Method Rules :
+## Controller Method Rules :
 - get_[uri_method]		: Access http://[server]/[module]/[class_contoller]/[uri_method] by GET request method
 - post_[uri_method]		: Access http://[server]/[module]/[class_contoller]/[uri_method] by POST request method
 - put_[uri_method]		: Access http://[server]/[module]/[class_contoller]/[uri_method] by PUT request method
 - delete_[uri_method]	: Access http://[server]/[module]/[class_contoller]/[uri_method] by GET request method
 
-# Note :
+## Note :
 - Case-sensitive.
 - Class contoller name = File contoller name (+.php extension).
 - If you'll use the loadView, create view in php extension.
@@ -21,7 +22,7 @@
 - Controller Class	: Welcome
  
 - Database table 'barang' :
-
+```sh
 CREATE TABLE `barang` (
   `id_brg` int(11) NOT NULL PRIMARY KEY,
   `nama_brg` varchar(50) NOT NULL,
@@ -37,10 +38,10 @@ INSERT INTO `barang` (`id_brg`, `nama_brg`, `harga`, `keterangan`, `foto_brg`) V
 (16, 'Toshiba Satellite C55D', 4725000, '', 'Toshiba-Satellite-C55D.jpg'),
 (17, 'Apple MacBook Air MMG2', 13125000, '', 'Apple-MacBook-Air-MMGF2.jpg'),
 (18, 'ASUS X455J', 5225000, 'Walaupun dipasarkan dengan harga murah, laptop ini memiliki performa cukup baik sebagai laptop gaming dengan Intel Core i3-4005U-1.7 Ghz. Laptop ini dibekali dengan layar berukuran 14 inch beresolusi 1366 x 768 piksel. Soal desain, laptop Asus X455LJ ini cukup trendi dan stylish sehingga sangat cocok untuk kamu yang memprioritaskan desain.<br/>Pada sektor grafis laptop ini memiliki Nvidia Geforce GT920 2 GB. Secara garis besar, X455LJ ini cocok bagi kamu yang sering menjalankan aplikasi berat seperti Adobe Premier, aplikasi pemrograman, maupun games yang membutuhkan memori berkapasitas besar.', 'ASUS-X455LJ.jpg');
-
+```
 
 - get 
-![alt text]()
+![alt text](https://raw.githubusercontent.com/MufidJamaluddin/MufidF/master/documentation/uri_get.JPG)
 
 - post
-![alt text]()
+![alt text](https://raw.githubusercontent.com/MufidJamaluddin/MufidF/master/documentation/uri_post.JPG)
