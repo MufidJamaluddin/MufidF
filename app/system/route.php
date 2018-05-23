@@ -14,6 +14,11 @@ use MufidF\Config\RouteConfig as RouteConfig;
 class Route
 {
 	/**
+		Uri yang dimiliki oleh module tertentu
+	**/
+	public $module_uri;
+	
+	/**
 		Metode yang digunakan dalam akses request ke server
 		GET, POST, PUT, DELETE
 	**/
@@ -35,6 +40,11 @@ class Route
 	public $controller;
 	
 	/**
+		Object Controller yang sedang diakses
+	**/
+	public $obj_controller;
+	
+	/**
 		Konstruktor
 	**/
 	public function __construct()
@@ -47,23 +57,35 @@ class Route
 	/**
 		aksi route
 	**/
-	private function startRoute($objname, $func)
+	private function startRoute($objname, $name_method)
 	{
-		$path = BASEDIR.'/route/'.$this->arr_path_uri[1].'/'.$this->arr_path_uri[2].'/'.$this->arr_path_uri[3].FConstant::ext;
-		
-		try
+		$path = realpath($this->module_uri.'/controllers/'.$this->arr_path_uri[2].FConstant::ext);
+
+		if($path)
 		{
 			include $path;
 						
-			$obj = new $objname;
-						
-			$func($obj);
+			$this->obj_controller = new $objname;
+			$this->obj_controller->route = &$this;
+			
+			if(method_exists($this->obj_controller, $name_method))
+			{
+				call_user_func_array(array($this->obj_controller, $name_method), $_GET);
+			}
+			else
+			{
+				echo FConstant::notfound;
+			}
 		}
-		catch(Exception $e)
+		else
 		{
 			echo FConstant::notfound;
 		}
 	}
+	
+	/**
+	
+	**/
 	
 	/**
 		Aksi Route ke path controller
@@ -72,43 +94,48 @@ class Route
 	{
 		switch(sizeof($this->arr_path_uri))
 		{
-			case 4 :
+			case 3:
 			
-				$this->startRoute($this->arr_path_uri[3], function($object){
-					call_user_func_array(array($object, $this->method.'_index'), $_GET);
-				});
+				$this->module_uri = BASEDIR.'/modules/'.$this->arr_path_uri[1].'/';
+				
+				if(isset($this->arr_path_uri[2]))
+					$this->startRoute($this->arr_path_uri[2], $this->method.'_index');
 				
 				break;
 				
-			case 5:
+			case 4:
+			
+				$this->module_uri = BASEDIR.'/modules/'.$this->arr_path_uri[1].'/';
 				
-				$this->startRoute($this->arr_path_uri[3], function($object){
-					$method_name = explode('&',$this->arr_path_uri[4]);
-					call_user_func_array(array($object, $this->method.'_'.$method_name[0]), $_GET);
-				});
+				if(isset($this->arr_path_uri[3]))
+				{
+					$this->startRoute($this->arr_path_uri[2], $this->method .'_' . explode('&',$this->arr_path_uri[3])[0]);
+				}
+				else
+				{
+					$this->startRoute($this->arr_path_uri[2], $this->method . '_index');
+				}
+				break;
+				
+			case 5:
+			
+				$this->module_uri = BASEDIR.'/modules/'.$this->arr_path_uri[1].'/';
+				
+				$this->startRoute($this->arr_path_uri[2], $this->method .'_' . explode('&',$this->arr_path_uri[3])[0]);
 				
 				break;
 				
 			case 1:
-				
-				$path = RouteConfig::home_path.RouteConfig::home_class.FConstant::ext;
-				$hmclass = RouteConfig::home_class;
-
-				if(file_exists($path))
-				{
-					include $path;
-							
-					$object = new $hmclass;
-							
-					call_user_func_array(array($object, $this->method.'_index'), $_GET);
-				}
-				else
-					echo FConstant::notfound;
-				
+			
+				$this->module_uri = BASEDIR.RouteConfig::home_path;
+				$this->startRoute(RouteConfig::home_class, $this->method.'_index');
+			
 				break;
 				
 			default:
+				
 				echo FConstant::notfound;
+				
 				break;
 		}
 	}

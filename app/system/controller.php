@@ -13,10 +13,7 @@ use MufidF\DB\Dbmysqli as Dbmysqli;
 class Controller
 {
 	// database
-	protected $db;
-	
-	// load third party app
-	protected $inst_app;
+	public $db;
 	
 	public function loadDb($dbname)
 	{
@@ -40,29 +37,40 @@ class Controller
 	
 	public function loadTApp($classname)
 	{
-		$load_path = BASEDIR.'/third_party/'.$classname.'.php';
+		$load_path = realpath($this->route->module_uri.'third_party/'.$classname.'.php');
 		
-		if(file_exists($load_path))
+		if($load_path)
 		{
 			include $load_path;
-			
-			$class = 'MufidF/ThirdParty/'.$classname;
 				
-			$inst_app[$classname] = new $class;
+			$this->{$classname} = new $classname;
 		}
 		else
 			throw new Exception("ThirdParty $classname Class Didnot Found");
 	}
 	
+	public function loadModel($classname)
+	{
+		$load_path = realpath($this->route->module_uri.'models/'.$classname.'.php');
+		
+		if($load_path)
+		{
+			include $load_path;
+			
+			$this->{$classname} = new $classname;
+			$this->{$classname}->con = &$this;
+		}
+	}
+	
 	public function loadView($filename, $data = null)
 	{
-		$load_path = BASEDIR.'/views/'.$filename.'.php';
+		$load_path = realpath($this->route->module_uri.'views/'.$filename.'.php');
 		
-		if(file_exists($load_path))
+		if($load_path)
 		{
 			if(isset($data))
 			{
-				foreach($data as $key => $val)
+				foreach($data as $key => &$val)
 				{
 					${$key} = $val;
 				}

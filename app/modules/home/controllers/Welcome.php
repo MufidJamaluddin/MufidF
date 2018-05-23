@@ -29,6 +29,18 @@ class Welcome extends Controller
 	{		
 		echo $id.". Welcome back, ".$name.'.</br>'.$arg1;
 	}
+	
+	/**
+		Uri 		: http://localhost/mufidf/home/first/Welcome/jsonlistbrg
+		Method 		: GET
+		Param GET	: id, name
+	**/
+	public function get_jsonlistbrg()
+	{		
+		$this->loadModel('Barang');
+		
+		echo json_encode($this->Barang->getListBarang());
+	}
 
 	/**
 		Uri		: http://localhost/mufidf/home/first/Welcome/listbrg
@@ -38,15 +50,15 @@ class Welcome extends Controller
 	{
 		$this->loadDb('mysqli');
 	
-		Controller::loadView('home/first/Table_header');
+		Controller::loadView('Table_header');
 		
 		$this->db->execRawQ('SELECT `id_brg`, `nama_brg`, `harga`, `keterangan` FROM `barang`', function($count,$obj){
 			$data['count'] = $count;
 			$data['obj'] = $obj;
-			Controller::loadView('home/first/Table_bodyval', $data);
+			Controller::loadView('Table_bodyval', $data);
 		});
 		
-		Controller::loadView('home/first/Table_footer');
+		Controller::loadView('Table_footer');
 
 	}
 	
